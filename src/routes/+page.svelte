@@ -217,15 +217,12 @@
 
   <!-- TODO board (current week) — at bottom -->
   <section class="section board-section-wrap">
-    <div class="board-header-row">
-      {#if authChecked && boardConfigured && !canEdit}
-        <button type="button" class="board-edit-btn" on:click={openEditModal}>Edit</button>
-      {/if}
-    </div>
     <Board
       canEdit={canEdit}
       weekLabel={weekLabel}
       tickets={boardTickets}
+      showEditButton={authChecked && !canEdit}
+      onEditClick={openEditModal}
       on:update={(e) => {
         boardTickets = e.detail;
         persistBoard();

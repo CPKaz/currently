@@ -5,6 +5,8 @@
   export let canEdit = false;
   export let weekLabel = '';
   export let tickets = { todo: [], inProgress: [], done: [] };
+  export let showEditButton = false;
+  export let onEditClick = () => {};
 
   const dispatch = createEventDispatcher();
   const COLUMNS = [
@@ -112,6 +114,8 @@
     <p class="board-week-label">{weekLabel}</p>
     {#if canEdit}
       <button type="button" class="board-clear-btn" on:click={clearBoard}>Clear board</button>
+    {:else if showEditButton}
+      <button type="button" class="board-edit-btn" on:click={onEditClick}>Edit</button>
     {/if}
   </div>
 
