@@ -246,13 +246,23 @@
       <h2 id="board-modal-title" class="board-modal-title">Edit board</h2>
       <p class="board-modal-desc">Enter the password (stored in Vercel env) to add, move, or clear tickets.</p>
       <div class="board-modal-input-wrap">
-        <input
-          type={showPassword ? 'text' : 'password'}
-          class="board-modal-input"
-          placeholder="Password"
-          bind:value={passwordInput}
-          on:keydown={(e) => e.key === 'Enter' && submitPassword()}
-        />
+        {#if showPassword}
+          <input
+            type="text"
+            class="board-modal-input"
+            placeholder="Password"
+            bind:value={passwordInput}
+            on:keydown={(e) => e.key === 'Enter' && submitPassword()}
+          />
+        {:else}
+          <input
+            type="password"
+            class="board-modal-input"
+            placeholder="Password"
+            bind:value={passwordInput}
+            on:keydown={(e) => e.key === 'Enter' && submitPassword()}
+          />
+        {/if}
         <button
           type="button"
           class="board-modal-eye"
