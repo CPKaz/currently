@@ -60,6 +60,8 @@
     lastUpdated = 'updated ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   });
 
+  let showPasswordModal = false;
+
   async function submitPassword() {
     authError = '';
     const res = await fetch('/api/board-auth', {
@@ -72,43 +74,34 @@
     if (data.authenticated) {
       canEdit = true;
       passwordInput = '';
+      showPasswordModal = false;
     } else {
       authError = data.error || 'Wrong password';
     }
   }
+
+  function openEditModal() {
+    authError = '';
+    passwordInput = '';
+    showPasswordModal = true;
+  }
+
+  function closeEditModal() {
+    showPasswordModal = false;
+    authError = '';
+    passwordInput = '';
+  }
+
+  function handleWindowKeydown(e) {
+    if (showPasswordModal && e.key === 'Escape') closeEditModal();
+  }
 </script>
+
+<svelte:window on:keydown={handleWindowKeydown} />
 
 <div class="hero-strip"></div>
 
 <div class="page">
-  <!-- TODO board (current week) -->
-  <section class="section board-section-wrap">
-    {#if authChecked && boardConfigured && !canEdit}
-      <div class="board-auth-gate">
-        <p>Enter password to add, move, or clear tickets:</p>
-        <input
-          type="password"
-          placeholder="Password"
-          bind:value={passwordInput}
-          on:keydown={(e) => e.key === 'Enter' && submitPassword()}
-        />
-        <button type="button" on:click={submitPassword}>Unlock</button>
-        {#if authError}
-          <p class="board-auth-error">{authError}</p>
-        {/if}
-      </div>
-    {/if}
-    <Board
-      canEdit={canEdit}
-      weekLabel={weekLabel}
-      tickets={boardTickets}
-      on:update={(e) => {
-        boardTickets = e.detail;
-        persistBoard();
-      }}
-    />
-  </section>
-
   <header>
     <div class="wordmark">// status update</div>
     <h1 class="tagline">
@@ -221,4 +214,52 @@
       {/if}
     </div>
   </div>
+
+  <!-- TODO board (current week) — at bottom -->
+  <section class="section board-section-wrap">
+    <div class="board-header-row">
+      {#if authChecked && boardConfigured && !canEdit}
+        <button type="button" class="board-edit-btn" on:click={openEditModal}>Edit</button>
+      {/if}
+    </div>
+    <Board
+      canEdit={canEdit}
+      weekLabel={weekLabel}
+      tickets={boardTickets}
+      on:update={(e) => {
+        boardTickets = e.detail;
+        persistBoard();
+      }}
+    />
+  </section>
 </div>
+
+<!-- Password popup -->
+{#if showPasswordModal}
+  <div
+    class="board-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="board-modal-title"
+    on:click={closeEditModal}
+  >
+    <div class="board-modal" role="document" on:click|stopPropagation>
+      <h2 id="board-modal-title" class="board-modal-title">Edit board</h2>
+      <p class="board-modal-desc">Enter the password (stored in Vercel env) to add, move, or clear tickets.</p>
+      <input
+        type="password"
+        class="board-modal-input"
+        placeholder="Password"
+        bind:value={passwordInput}
+        on:keydown={(e) => e.key === 'Enter' && submitPassword()}
+      />
+      {#if authError}
+        <p class="board-auth-error">{authError}</p>
+      {/if}
+      <div class="board-modal-actions">
+        <button type="button" class="board-btn board-btn-primary" on:click={submitPassword}>Unlock</button>
+        <button type="button" class="board-btn" on:click={closeEditModal}>Cancel</button>
+      </div>
+    </div>
+  </div>
+{/if}
