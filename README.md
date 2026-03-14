@@ -119,7 +119,21 @@ The API function handles token refreshing automatically on each request — the 
 
 ---
 
-### 5. Set environment variables in Vercel
+### 5. TODO board (optional)
+
+The Kanban board at the top is week-scoped (Monday–Sunday) and stored in your browser. To allow editing (add/move/clear tickets), set a shared password:
+
+- In Vercel → Environment Variables, add:
+  ```
+  BOARD_PASSWORD = your-secret-password
+  ```
+- Anyone who enters this password can edit the board; the cookie lasts 7 days.
+
+If `BOARD_PASSWORD` is not set, the board is view-only and the unlock form is hidden (or you can show it and it will return “not configured”).
+
+---
+
+### 6. Set environment variables in Vercel
 
 In your Vercel dashboard → Project → Settings → Environment Variables, add all the keys above. Then redeploy:
 
