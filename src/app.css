@@ -781,7 +781,15 @@ header  { animation: fadeUp 0.5s ease both; }
   line-height: 1.4;
 }
 
+.board-modal-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .board-modal-input {
+  flex: 1;
   width: 100%;
   font-family: var(--mono);
   font-size: 13px;
@@ -789,13 +797,35 @@ header  { animation: fadeUp 0.5s ease both; }
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 2px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
+  padding: 10px 44px 10px 12px;
   box-sizing: border-box;
 }
 
 .board-modal-input::placeholder {
   color: var(--text3);
+}
+
+.board-modal-eye {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 0.2s;
+}
+
+.board-modal-eye:hover {
+  color: var(--text2);
 }
 
 .board-modal .board-auth-error {

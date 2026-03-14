@@ -10,7 +10,8 @@ const COOKIE_NAME = 'board_edit';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 function hashPassword(password) {
-  return crypto.createHash('sha256').update(String(password)).digest('hex');
+  const str = String(password ?? '').trim();
+  return crypto.createHash('sha256').update(str, 'utf8').digest('hex');
 }
 
 function getCookieOptions() {
@@ -32,9 +33,8 @@ export default async function handler(req, res) {
     return res.status(204).end();
   }
 
-  const expectedHash = process.env.BOARD_PASSWORD
-    ? hashPassword(process.env.BOARD_PASSWORD)
-    : null;
+  const envPassword = (process.env.BOARD_PASSWORD ?? '').trim();
+  const expectedHash = envPassword ? hashPassword(envPassword) : null;
 
   if (req.method === 'GET') {
     if (!expectedHash) {
@@ -53,14 +53,18 @@ export default async function handler(req, res) {
     if (!expectedHash) {
       return res.status(500).json({ error: 'Board password not configured' });
     }
-    let body;
-    try {
-      body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
-    } catch {
-      return res.status(400).json({ error: 'Invalid JSON' });
+    let body = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        return res.status(400).json({ error: 'Invalid JSON' });
+      }
     }
-    const password = body.password;
-    if (hashPassword(password) !== expectedHash) {
+    body = body || {};
+    const password = body.password != null ? String(body.password).trim() : '';
+    const submittedHash = hashPassword(password);
+    if (submittedHash !== expectedHash) {
       return res.status(401).json({ authenticated: false, error: 'Wrong password' });
     }
     res.setHeader('Set-Cookie', `${COOKIE_NAME}=${expectedHash}; ${getCookieOptions()}`);
