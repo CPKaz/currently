@@ -606,7 +606,7 @@ function renderSteam(data) {
   grid.innerHTML = data.games.map(g => `
     <div class="game-card">
       <div class="game-name">${g.name}</div>
-      <div class="game-hours">${fmt.hours(g.playtime_2weeks * 60)} this fortnight</div>
+      <div class="game-hours">${fmt.hours(g.playtime_2weeks * 60)} in the last 2 weeks</div>
     </div>
   `).join('');
 }
