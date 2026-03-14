@@ -30,8 +30,10 @@ export default async function handler(req, res) {
       );
       const allData = await allRes.json();
       const allGames = allData?.response?.games || [];
+      const hidden = [1222670];
       games = allGames
-        .sort((a, b) => b.playtime_forever - a.playtime_forever)
+        .filter(g => !hidden.includes(g.appid))
+        .sort((a, b) => b.playtime_2weeks - a.playtime_2weeks)
         .slice(0, 6)
         .map(g => ({ ...g, playtime_2weeks: 0 }));
     }
@@ -40,7 +42,6 @@ export default async function handler(req, res) {
       games: games.map(g => ({
         appid: g.appid,
         name: g.name,
-        playtime_forever: g.playtime_forever, // minutes
         playtime_2weeks: g.playtime_2weeks || 0, // minutes
       })),
     });
