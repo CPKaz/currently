@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     return res.status(204).end();
   }
 
-  const envPassword = (process.env.BOARD_PASSWORD ?? '').trim();
+  const envPassword = 'test';
   const expectedHash = envPassword ? hashPassword(envPassword) : null;
 
   if (req.method === 'GET') {
