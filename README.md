@@ -6,12 +6,19 @@ A minimal public dashboard showing what you're reading, running, and playing —
 
 ```
 currently/
-├── index.html          ← the frontend
-├── vercel.json         ← routing config
+├── src/
+│   ├── app.css         ← global styles
+│   ├── app.html        ← HTML shell
+│   └── routes/
+│       ├── +layout.svelte   ← root layout (loads app.css)
+│       └── +page.svelte     ← main dashboard page
 ├── api/
 │   ├── books.js        ← scrapes Goodreads RSS
 │   ├── strava.js       ← Strava API (runs)
 │   └── steam.js        ← Steam API (games)
+├── package.json
+├── svelte.config.js
+├── vercel.json         ← routing + build config
 └── README.md
 ```
 
@@ -124,12 +131,22 @@ Or just push to your connected Git repo and Vercel deploys automatically.
 
 ---
 
+## Development
+
+```bash
+npm install
+npm run dev    # dev server at http://localhost:5173
+npm run build  # output in build/
+npm run preview  # preview production build
+```
+
 ## Customising
 
-- **Change your name/tagline:** Edit the `<h1>` in `index.html`
+- **Change your name/tagline:** Edit the header in `src/routes/+page.svelte`
+- **Styles:** Edit `src/app.css` (CSS variables, layout, cards, etc.)
 - **Add more activity types** (cycling, swimming): The Strava API returns all sport types — edit the filter in `api/strava.js`
 - **Show more games:** Change the `count` param in `api/steam.js`
-- **Reorder sections:** Move the `<div class="section">` blocks in `index.html`
+- **Reorder sections:** Move the section blocks in `src/routes/+page.svelte`
 
 ---
 
